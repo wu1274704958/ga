@@ -1,0 +1,8 @@
+[package]
+name = "ga"
+version = "0.1.0"
+authors = ["wusj7856 <wusj@realbull.net>"]
+edition = "2018"
+
+[dependencies]
+num = "0.2.0"
