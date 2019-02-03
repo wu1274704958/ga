@@ -62,35 +62,35 @@ pub fn fromGray<T>(g : T) -> T
     return res;
 }
 
-pub fn to_gray_bu(b : BigUint) -> BigUint
+pub fn to_gray_bu(b : &BigUint) -> BigUint
 {
     let K = BigUint::one();
     let len = b.bits() - 1;
     let mut j = len;
-    let mut f = K.clone() & (b.clone() >> j);
-    let mut res = f.clone() << j;
+    let mut f = &K & (b >> j);
+    let mut res = &f << j;
 
     loop{
         if !(j > 0) { break;}
-        let nf = (K.clone() & (b.clone() >> ( j - 1 )));
-        res = res | ((f.clone() ^ nf.clone()) << (j - 1));
+        let nf = (&K & (b >> ( j - 1 )));
+        res = res | ((&f ^ &nf) << (j - 1));
         f = nf;
         j -= 1;
     }
     return res;
 }
 
-pub fn from_gray_bu(g : BigUint) -> BigUint
+pub fn from_gray_bu(g : &BigUint) -> BigUint
 {
     let K = BigUint::one();
     let len = g.bits() - 1;
     let mut j = len;
-    let mut res = (K.clone() & (g.clone() >> j)) << j;
+    let mut res = (&K & (g >> j)) << j;
 
     loop{
         if !(j > 0) { break;}
-        let nf = (K.clone() & (res.clone() >> j));
-        let gi = (K.clone() & (g.clone() >> (j - 1)));
+        let nf = (&K & (&res >> j));
+        let gi = (&K & (g >> (j - 1)));
         res = res | ((gi ^ nf) << (j - 1));
         j -= 1;
     }
