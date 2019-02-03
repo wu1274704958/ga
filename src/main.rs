@@ -1,5 +1,7 @@
 mod gray;
-use gray::{ printBin,toGray,fromGray,to_gray_bu,from_gray_bu};
+use num::BigUint;
+use gray::{ printBin,toGray,fromGray,from_gray_bu,to_gray_bu };
+use num_traits::cast::FromPrimitive;
 
 use std::str::from_utf8;
 mod canvas;
@@ -8,7 +10,7 @@ use num::BigUint;
 use num_traits::cast::FromPrimitive;
 use individual::Individual;
 use canvas::{ Canvas,Vector4};
-const individual_num :u32 = 6; 
+const INDIVIDUAL_NUM:u32 = 6;
 
 type Population = Vec<Individual>;
 
@@ -25,23 +27,25 @@ fn main() {
     });
 
     let a:Individual = 0u32.into();
+//    let mut can = Canvas::new(40,80);
+//    can.drawLine(&Vector4{ x:0.0,y:0.0,z:0.0,w:0.0}, &Vector4 { x:20.0,y:20.0,z:20.0,w:0.0});
+//    let s = from_utf8(can.data.as_ref()).unwrap();
+//    println!("{}",s);
 
-    let bu = BigUint::from_u64(1028).unwrap();
-    println!("{:?}",bu);
-    let bu_res = to_gray_bu(bu);
-    println!("{:?}",bu_res);
-    println!("{:?}",from_gray_bu(bu_res));
-    //let mut can = Canvas::new(40,80);
-    //can.drawLine(&Vector4{ x:0.0,y:0.0,z:0.0,w:0.0}, &Vector4 { x:20.0,y:20.0,z:20.0,w:0.0});
-    //let s = from_utf8(can.data.as_ref()).unwrap();
-    //println!("{}",s);
-    
+    let bi = BigUint::from_u64(1u64).unwrap();
+    let bi2 = bi << 132;
+    println!("{}",bi2.to_str_radix(2));
+    let g = to_gray_bu(&bi2);
+    let b = from_gray_bu(&g);
+
+    println!("{}",g.to_str_radix(2));
+    println!("{}",b.to_str_radix(2));
 }
 
 fn init_population() -> Population
 {
     let mut res = vec!();
-    for _ in 0..individual_num{
+    for _ in 0..INDIVIDUAL_NUM {
         res.push(0u32.into());
     }
     res
