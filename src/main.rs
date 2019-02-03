@@ -8,7 +8,7 @@ mod canvas;
 mod individual;
 use individual::Individual;
 use canvas::{ Canvas,Vector4};
-const individual_num :u32 = 6; 
+const INDIVIDUAL_NUM:u32 = 6;
 
 type Population = Vec<Individual>;
 
@@ -42,7 +42,7 @@ fn main() {
 fn init_population() -> Population
 {
     let mut res = vec!();
-    for _ in 0..individual_num{
+    for _ in 0..INDIVIDUAL_NUM {
         res.push(0u32.into());
     }
     res
