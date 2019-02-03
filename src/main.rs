@@ -1,7 +1,5 @@
 mod gray;
-use num::BigUint;
 use gray::{ printBin,toGray,fromGray,from_gray_bu,to_gray_bu };
-use num_traits::cast::FromPrimitive;
 
 use std::str::from_utf8;
 mod canvas;
