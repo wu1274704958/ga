@@ -1,29 +1,15 @@
 mod gray;
-
+use num::BigUint;
 use gray::{ printBin,toGray,fromGray };
 
 use std::str::from_utf8;
-use std::convert::From;
-use std::fmt::Debug;
 mod canvas;
-
+mod individual;
+use individual::Individual;
 use canvas::{ Canvas,Vector4};
-
 const individual_num :u32 = 6; 
 
-#[derive(Debug)]
-struct Individual{
-    gene : u32
-}
-
-impl From<u32> for Individual {
-    fn from(w: u32) -> Self {
-         Individual { gene : w }
-    }
-}
-
 type Population = Vec<Individual>;
-
 
 fn main() {
     let a = toGray(1028i64);
@@ -52,4 +38,3 @@ fn init_population() -> Population
     }
     res
 }
-
