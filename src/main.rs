@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate lazy_static;
+
 mod gray;
 use gray::{ printBin,toGray,fromGray,from_gray_bu,to_gray_bu };
 
@@ -44,7 +47,7 @@ fn init_population() -> Population
 {
     let mut res = vec!();
     for _ in 0..INDIVIDUAL_NUM {
-        res.push(0u32.into());
+        res.push(Individual::rand());
     }
     res
 }

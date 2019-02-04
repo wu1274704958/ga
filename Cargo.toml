@@ -7,3 +7,5 @@ edition = "2018"
 [dependencies]
 num = "0.2.0"
 num-traits = "0.2.6"
+rand = "0.6"
+lazy_static = "1.2.0"
