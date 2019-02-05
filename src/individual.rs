@@ -9,13 +9,13 @@ use std::str::from_utf8;
 const BX:i32 = 0;
 const BY:i32 = 0;
 
-const EX:i32 = 6;
-const EY:i32 = 10;
+const EX:i32 = 7;
+const EY:i32 = 9;
 
 const W:i32 = 16;
 const H:i32 = 16;
 
-const STONE_NUM:u32 = 0;
+const STONE_NUM:u32 = 2;
 
 lazy_static! {
     static ref Stones:Vec<i32> = {
@@ -92,9 +92,17 @@ impl Individual{
 pub fn init_stones() -> Vec<i32>
 {
     let mut stones = Vec::new();
-    for i in 0..STONE_NUM{
-        stones.push(random::<i32>() % W);
-        stones.push(random::<i32>() % H);
+    let mut i = 0;
+    loop
+    {
+        if i >= STONE_NUM { break; }
+        let x = (random::<u32>() % W as u32) as i32;
+        let y = (random::<u32>() % H as u32) as i32;
+        if x != EX && y != EY{
+            stones.push(x);
+            stones.push(y);
+        }else { continue; }
+        i += 1;
     }
     stones
 }
@@ -134,6 +142,13 @@ pub fn draw(ind : Individual)
     let mut y = BY;
     let k = 3u32;
     let b = fromGray(ind.gene);
+
+    
+    let len = unsafe {Stones.len() };                                                  let mut j = 0usize;                                                                loop{
+        if j >= len{ break;}
+        c.setPixel(dbg!(Stones[j]), dbg!(Stones[j + 1]),7);
+        j += 2;
+    }
         
     for i in 0..16{
         stdout.move_cursor_up(H as usize);
