@@ -18,9 +18,10 @@ lazy_static! {
     static ref Stones:Vec<i32> = {
         init_stones()
     };
+    static ref MaxLen:f32 = { 
+        max_len()
+    };
 }
-
-
 pub fn max_len() -> f32
 {
     (((EX - BX).pow(2) + (EY - BY).pow(2))as f32).sqrt()
@@ -28,9 +29,9 @@ pub fn max_len() -> f32
 
 pub enum Behavior {Up, Down, Left, Right}
 
-#[derive(Debug)]
+#[derive(Debug,Copy,Clone)]
 pub struct Individual{
-    gene : u32
+    pub gene : u32
 }
 
 impl From<u32> for Individual {
@@ -69,7 +70,7 @@ impl Individual{
         }
 
         let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
-        max_len() - len
+        (*MaxLen) - len
     }
     pub fn rand() -> Individual
     {
@@ -95,6 +96,14 @@ pub fn init_stones() -> Vec<i32>
 
 pub fn has_stone(x:i32,y:i32) -> bool
 {
+    let len = unsafe {Stones.len() };
+    let mut i = 0usize;
+    loop{
+        if i >= len{ break;}
+        if unsafe { Stones[i] == x && Stones[i + 1] == y }
+        {  return true; }
+        i += 2;
+    }
     false
 }
 
