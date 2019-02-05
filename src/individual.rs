@@ -2,17 +2,20 @@ use std::convert::From;
 use std::fmt::Debug;
 use crate::gray::{ fromGray,toGray};
 use rand::random;
-
+use crate::canvas::{ Canvas };
+use std::thread::sleep_ms;
+use console::{style,Term};
+use std::str::from_utf8;
 const BX:i32 = 0;
 const BY:i32 = 0;
 
-const EX:i32 = 16;
-const EY:i32 = 16;
+const EX:i32 = 6;
+const EY:i32 = 10;
 
 const W:i32 = 16;
 const H:i32 = 16;
 
-const STONE_NUM:u32 = 2;
+const STONE_NUM:u32 = 0;
 
 lazy_static! {
     static ref Stones:Vec<i32> = {
@@ -67,6 +70,8 @@ impl Individual{
                 y = pre_y;
                 break;
             }
+            let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
+            if (len - (*MaxLen) ).abs() < 0.5{ break;}
         }
 
         let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
@@ -115,5 +120,34 @@ pub fn to_behavior(b:u32) -> Behavior
         2 => Behavior::Left,
         3 => Behavior::Right,
         _ => {panic!("no behavior")}
+    }
+}
+
+pub fn draw(ind : Individual)
+{
+    let mut c = Canvas::new(W as u32,H as u32);
+    c.setPixel(BX,BY,10);
+    c.setPixel(EX,EY,9);
+
+    let mut stdout = Term::stdout();
+    let mut x = BX;
+    let mut y = BY;
+    let k = 3u32;
+    let b = fromGray(ind.gene);
+        
+    for i in 0..16{
+        stdout.move_cursor_up(H as usize);
+        let a = k & (b >> (i << 1));
+        let beh = to_behavior(a);
+        match beh{
+            Behavior::Up => y -= 1,
+            Behavior::Down => y += 1,
+            Behavior::Left => x -= 1,
+            Behavior::Right => x += 1
+        }
+        c.setPixel(x,y,8);
+        let s = from_utf8( c.data.as_slice() ).unwrap();
+        print!("{}",style(s).cyan().on_black().bold());
+        sleep_ms(300);
     }
 }

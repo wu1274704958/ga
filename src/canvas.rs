@@ -38,7 +38,7 @@ impl Canvas {
         }
         self.zb.iter_mut().for_each(|it|{*it = -128});
     }
-    pub fn setPixel(&mut self, x: u32, y: u32 ,z:i32)
+    pub fn setPixel(&mut self, x: i32, y: i32 ,z:i32)
     {
         //print!("{}\n",z);
         let mut p : u8;
@@ -66,10 +66,10 @@ impl Canvas {
              10 => b'@',
             _ => b'#'
         };
-        if self.zb[(y * self.w + x) as usize] < (z as i8)
+        if self.zb[(y * self.w as i32 + x) as usize] < (z as i8)
         {
-            self.data[(y * (self.w + 1) + x) as usize] = p;
-            self.zb[(y * self.w + x) as usize] = z as i8;
+            self.data[(y * (self.w as i32 + 1) + x) as usize] = p;
+            self.zb[(y * self.w as i32 + x) as usize] = z as i8;
         }
     }
     pub fn inBound(&self, x: i32, y: i32) -> bool {
@@ -98,7 +98,7 @@ impl Canvas {
 
         loop{  /* loop */
             if self.inBound(x0,y0) {
-                self.setPixel(x0 as u32, y0 as u32, z0);
+                self.setPixel(x0, y0, z0);
             }
 
             if i == 0 {break;}
