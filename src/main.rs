@@ -108,7 +108,7 @@ fn mutation(population: &mut Population)
 {
     let index = random::<usize>() % INDIVIDUAL_NUM as usize;
     let mut ind = population[index ];
-    for _ in 0..16{
+    for _ in 0..(random::<u32>() % 25 + 1){
         let r = random::<u32>() % 32;
         let k = 1u32 << r;
         //printBin(ind.gene);
