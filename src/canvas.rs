@@ -72,6 +72,14 @@ impl Canvas {
             self.zb[(y * self.w as i32 + x) as usize] = z as i8;
         }
     }
+
+    pub fn setPixel2D(&mut self, x: i32, y: i32 ,c:u8)
+    {
+        if self.inBound(x,y){
+            self.data[(y * (self.w as i32 + 1) + x) as usize] = c;
+        }
+    }
+
     pub fn inBound(&self, x: i32, y: i32) -> bool {
         x >= 0 && x < self.w as i32 && y >= 0 && y < self.h as i32
     }

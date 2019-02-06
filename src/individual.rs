@@ -1,13 +1,13 @@
 use std::convert::From;
-use std::fmt::Debug;
+use std::fmt::{Debug,Result};
 use crate::gray::{ fromGray,toGray};
 use rand::random;
 use crate::canvas::{ Canvas };
 use std::thread::sleep_ms;
 use console::{style,Term};
 use std::str::from_utf8;
-const BX:i32 = 0;
-const BY:i32 = 0;
+const BX:i32 = 3;
+const BY:i32 = 4;
 
 const EX:i32 = 7;
 const EY:i32 = 9;
@@ -31,6 +31,18 @@ pub fn max_len() -> f32
 }
 
 pub enum Behavior {Up, Down, Left, Right}
+
+impl Debug for Behavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result {
+        let c = match self{
+           Behavior::Up      =>'↑',
+           Behavior::Down    =>'↓',
+           Behavior::Left    =>'←',
+           Behavior::Right   =>'→'
+        };
+        write!(f, "{}", c)                                  
+    }                                                                          
+} 
 
 #[derive(Debug,Copy,Clone)]
 pub struct Individual{
@@ -71,7 +83,7 @@ impl Individual{
                 break;
             }
             let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
-            if (len - (*MaxLen) ).abs() < 0.5{ break;}
+            if len < 0.5{ break;}
         }
 
         let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
@@ -134,24 +146,24 @@ pub fn to_behavior(b:u32) -> Behavior
 pub fn draw(ind : Individual)
 {
     let mut c = Canvas::new(W as u32,H as u32);
-    c.setPixel(BX,BY,10);
-    c.setPixel(EX,EY,9);
+    c.setPixel2D(BX,BY,b'@');
+    c.setPixel2D(EX,EY,b'$');
 
     let mut stdout = Term::stdout();
     let mut x = BX;
     let mut y = BY;
     let k = 3u32;
     let b = fromGray(ind.gene);
-
+    let score = ind.score();
     
     let len = unsafe {Stones.len() };                                                  let mut j = 0usize;                                                                loop{
         if j >= len{ break;}
-        c.setPixel(dbg!(Stones[j]), dbg!(Stones[j + 1]),7);
+        c.setPixel2D(Stones[j], Stones[j + 1],b'R');
         j += 2;
     }
         
     for i in 0..16{
-        stdout.move_cursor_up(H as usize);
+        stdout.move_cursor_up(H as usize + 1);
         let a = k & (b >> (i << 1));
         let beh = to_behavior(a);
         match beh{
@@ -160,9 +172,30 @@ pub fn draw(ind : Individual)
             Behavior::Left => x -= 1,
             Behavior::Right => x += 1
         }
-        c.setPixel(x,y,8);
+        if has_stone(x,y)
+        {
+            break;
+        }
+        if x == EX && y == EY
+        {
+            c.setPixel2D(x,y,b'E');
+            let s = from_utf8( c.data.as_slice() ).unwrap();
+            print!("{}",style(s).cyan().on_black().bold());
+            let tips = format!("{}  {:?} {}",i,beh,score);
+            println!("{}",style(tips).green().on_black().bold());
+            break;
+        }
+        let dir_c = match beh{
+           Behavior::Up      =>b'^',
+           Behavior::Down    =>b'v',
+           Behavior::Left    =>b'<',
+           Behavior::Right   =>b'>'
+        };
+        c.setPixel2D(x,y,dir_c);
         let s = from_utf8( c.data.as_slice() ).unwrap();
         print!("{}",style(s).cyan().on_black().bold());
+        let tips = format!("{}  {:?} {}",i,beh,score);
+        println!("{}",style(tips).green().on_black().bold());
         sleep_ms(300);
     }
 }
