@@ -6,11 +6,13 @@ use crate::canvas::{ Canvas };
 use std::thread::sleep_ms;
 use console::{style,Term};
 use std::str::from_utf8;
-const BX:i32 = 3;
-const BY:i32 = 4;
+use num::PrimInt;
+use std::mem::size_of;
+const BX:i32 = 0;
+const BY:i32 = 0;
 
-const EX:i32 = 7;
-const EY:i32 = 9;
+const EX:i32 = 5;
+const EY:i32 = 12;
 
 const W:i32 = 16;
 const H:i32 = 16;
@@ -45,25 +47,25 @@ impl Debug for Behavior {
 } 
 
 #[derive(Debug,Copy,Clone)]
-pub struct Individual{
-    pub gene : u32
+pub struct Individual<T:PrimInt>{
+    pub gene : T
 }
 
-impl From<u32> for Individual {
-    fn from(w: u32) -> Self {
+impl<T:PrimInt> From<T> for Individual<T> {
+    fn from(w: T) -> Self {
          Individual { gene : w }
     }
 }
 
-impl Individual{
+impl<T:PrimInt> Individual<T>{
     pub fn score(&self) -> f32
     {
-        let k = 3u32;
+        let k:T = T::from(3).unwrap();
         let b = fromGray(self.gene);
         let mut x = BX;
         let mut y = BY;
         
-        for i in 0..16{
+        for i in 0..size_of::<T>() * 4 {
             let pre_x = x;
             let pre_y = y;
 
@@ -89,13 +91,13 @@ impl Individual{
         let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
         (*MaxLen) - len
     }
-    pub fn rand() -> Individual
+    pub fn rand() -> Individual<T>
     {
-        let mut b:u32 = 0;
-        for i in 0..16{
+        let mut b:T = T::zero();
+        for i in 0..size_of::<T>() * 4{
             let r = random::<u32>() % 4;
             b = b << (i << 1);
-            b = b | r;
+            b = b | T::from(r).unwrap();
         }
         toGray(b).into()
     }
@@ -132,9 +134,9 @@ pub fn has_stone(x:i32,y:i32) -> bool
     false
 }
 
-pub fn to_behavior(b:u32) -> Behavior
+pub fn to_behavior<T :PrimInt>(b:T) -> Behavior
 {
-    match b {
+    match b.to_u32().unwrap() {
         0 => Behavior::Up,
         1 => Behavior::Down,
         2 => Behavior::Left,
@@ -143,7 +145,7 @@ pub fn to_behavior(b:u32) -> Behavior
     }
 }
 
-pub fn draw(ind : Individual)
+pub fn draw<T:PrimInt>(ind : Individual<T>)
 {
     let mut c = Canvas::new(W as u32,H as u32);
     c.setPixel2D(BX,BY,b'@');
@@ -152,7 +154,7 @@ pub fn draw(ind : Individual)
     let mut stdout = Term::stdout();
     let mut x = BX;
     let mut y = BY;
-    let k = 3u32;
+    let k = T::from(3u32).unwrap();
     let b = fromGray(ind.gene);
     let score = ind.score();
     
@@ -162,7 +164,7 @@ pub fn draw(ind : Individual)
         j += 2;
     }
         
-    for i in 0..16{
+    for i in 0..size_of::<T>() * 4{
         stdout.move_cursor_up(H as usize + 1);
         let a = k & (b >> (i << 1));
         let beh = to_behavior(a);

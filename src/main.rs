@@ -18,7 +18,7 @@ use std::thread::sleep_ms;
 const INDIVIDUAL_NUM:u32 = 30;
 const ITER_NUM:usize = 500;
 const MUTATION:f32 = 0.8;
-type Population = Vec<Individual>;
+type Population = Vec<Individual<u64>>;
 
 fn main() {
     let mut population = init_population();
@@ -52,14 +52,14 @@ fn init_population() -> Population
     let mut res = vec!();
     for _ in 0..INDIVIDUAL_NUM {
         //let t:Individual = random::<u32>().into();
-        let t = Individual::rand();
+        let t = Individual::<u64>::rand();
         println!("{}",t.score());
         res.push(t);//Individual::rand());
     }
     res
 }
 
-fn selection(population: &mut Population) -> (usize,Individual)
+fn selection(population: &mut Population) -> (usize,Individual<u64>)
 {
     population.sort_by(| a,b | { 
         let s1 = a.score();
@@ -85,13 +85,13 @@ fn selection(population: &mut Population) -> (usize,Individual)
     (index,population[ 0])//random::<usize>() % INDIVIDUAL_NUM as usize ]
 }
 
-fn cross_over(i1: Individual,i2 : Individual ) -> Individual
+fn cross_over(i1: Individual<u64>,i2 : Individual<u64> ) -> Individual<u64>
 { 
     if i1.gene != i2.gene { 
-        let mut res = 0u32;
-        let r = random::<u32>() % 31 + 1 ; // 1 ~ 31
-        let mask1 = get_mask(r) << (32 - r);
-        let mask2 = get_mask(32 - r);
+        let mut res = 0u64;
+        let r = random::<u32>() % 63 + 1 ; // 1 ~ 63
+        let mask1 = get_mask(r) << (64 - r);
+        let mask2 = get_mask(64 - r);
         res = mask1 & i1.gene;
         res |= (mask2 & i2.gene);
         //dbg!(r);
@@ -109,8 +109,8 @@ fn mutation(population: &mut Population)
     let index = random::<usize>() % INDIVIDUAL_NUM as usize;
     let mut ind = population[index ];
     for _ in 0..(random::<u32>() % 25 + 1){
-        let r = random::<u32>() % 32;
-        let k = 1u32 << r;
+        let r = random::<u32>() % 64;
+        let k = 1u64 << r;
         //printBin(ind.gene);
         if ((ind.gene & k) >> r) == 0
         {
@@ -124,10 +124,10 @@ fn mutation(population: &mut Population)
     }
 }
 
-fn get_mask(s:u32) -> u32
+fn get_mask(s:u32) -> u64
 {
     let mut res = 0;
-    let k = 1u32;
+    let k = 1u64;
     for _ in 0..s{
         res |= k;
         res <<= 1;
