@@ -23,7 +23,7 @@ type Population = Vec<Individual<u64>>;
 fn main() {
     let mut population = init_population();
     let mut i = 0;
-    let ml = max_len();
+    let ml = max_len() + 10.0;
     println!("Max Len = {}",ml);
 
     loop{

@@ -85,7 +85,9 @@ impl<T:PrimInt> Individual<T>{
                 break;
             }
             let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
-            if len < 0.5{ break;}
+            if len < 0.5{
+               return (*MaxLen) - len + (size_of::<T>() * 4 - 1 - i) as f32;
+            }
         }
 
         let len = (((y - EY).abs().pow(2) + (x - EX).abs().pow(2))as f32).sqrt();
