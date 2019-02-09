@@ -3,11 +3,13 @@ use std::fmt::{Debug,Result};
 use crate::gray::{ fromGray,toGray};
 use rand::random;
 use crate::canvas::{ Canvas };
-use std::thread::sleep_ms;
+use std::thread::sleep;
 use console::{style,Term};
 use std::str::from_utf8;
 use num::PrimInt;
 use std::mem::size_of;
+use core::time::Duration;
+
 const BX:i32 = 0;
 const BY:i32 = 0;
 
@@ -125,11 +127,11 @@ pub fn init_stones() -> Vec<i32>
 
 pub fn has_stone(x:i32,y:i32) -> bool
 {
-    let len = unsafe {Stones.len() };
+    let len = Stones.len() ;
     let mut i = 0usize;
     loop{
         if i >= len{ break;}
-        if unsafe { Stones[i] == x && Stones[i + 1] == y }
+        if  Stones[i] == x && Stones[i + 1] == y
         {  return true; }
         i += 2;
     }
@@ -146,28 +148,30 @@ pub fn to_behavior<T :PrimInt>(b:T) -> Behavior
         _ => {panic!("no behavior")}
     }
 }
-
+#[allow(unused_must_use)]
 pub fn draw<T:PrimInt>(ind : Individual<T>)
 {
     let mut c = Canvas::new(W as u32,H as u32);
     c.setPixel2D(BX,BY,b'@');
     c.setPixel2D(EX,EY,b'$');
 
-    let mut stdout = Term::stdout();
+    let stdout = Term::stdout();
     let mut x = BX;
     let mut y = BY;
     let k = T::from(3u32).unwrap();
     let b = fromGray(ind.gene);
     let score = ind.score();
     
-    let len = unsafe {Stones.len() };                                                  let mut j = 0usize;                                                                loop{
+    let len = Stones.len() ;
+    let mut j = 0usize;
+    loop{
         if j >= len{ break;}
-        c.setPixel2D(Stones[j], Stones[j + 1],b'R');
+        c.setPixel2D(Stones[j], Stones[j + 1],b'#');
         j += 2;
     }
         
     for i in 0..size_of::<T>() * 4{
-        stdout.move_cursor_up(H as usize + 1);
+        if i != 0 { stdout.move_cursor_up(H as usize + 1); }
         let a = k & (b >> (i << 1));
         let beh = to_behavior(a);
         match beh{
@@ -190,16 +194,16 @@ pub fn draw<T:PrimInt>(ind : Individual<T>)
             break;
         }
         let dir_c = match beh{
-           Behavior::Up      =>b'^',
-           Behavior::Down    =>b'v',
-           Behavior::Left    =>b'<',
-           Behavior::Right   =>b'>'
+           Behavior::Up      =>b'U',
+           Behavior::Down    =>b'D',
+           Behavior::Left    =>b'L',
+           Behavior::Right   =>b'R'
         };
         c.setPixel2D(x,y,dir_c);
         let s = from_utf8( c.data.as_slice() ).unwrap();
         print!("{}",style(s).cyan().on_black().bold());
         let tips = format!("{}  {:?} {}",i,beh,score);
         println!("{}",style(tips).green().on_black().bold());
-        sleep_ms(300);
+        sleep( Duration::from_millis(300));
     }
 }

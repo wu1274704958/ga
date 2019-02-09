@@ -1,4 +1,5 @@
 
+#[allow(dead_code)]
 pub struct Vector4<T>
 {
     pub x :T,
@@ -41,7 +42,7 @@ impl Canvas {
     pub fn setPixel(&mut self, x: i32, y: i32 ,z:i32)
     {
         //print!("{}\n",z);
-        let mut p : u8;
+        let p : u8;
         p = match z {
             -10 => b'\'',
             -9 => b'\'',
