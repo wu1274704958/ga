@@ -19,7 +19,7 @@ const EY:i32 = 12;
 const W:i32 = 16;
 const H:i32 = 16;
 
-const STONE_NUM:u32 = 2;
+const STONE_NUM:u32 = 7;
 
 lazy_static! {
     static ref Stones:Vec<i32> = {
@@ -116,13 +116,26 @@ pub fn init_stones() -> Vec<i32>
         if i >= STONE_NUM { break; }
         let x = (random::<u32>() % W as u32) as i32;
         let y = (random::<u32>() % H as u32) as i32;
-        if x != EX && y != EY{
+        if x != EX && y != EY && !has_stone_init(&stones,x,y) {
             stones.push(x);
             stones.push(y);
         }else { continue; }
         i += 1;
     }
     stones
+}
+
+fn has_stone_init(stones: &Vec<i32>,x :i32, y :i32) -> bool
+{
+    let len = stones.len();
+    let mut i = 0usize;
+    loop{
+        if i >= len{ break;}
+        if  stones[i] == x && stones[i + 1] == y
+        {  return true; }
+        i += 2;
+    }
+    false
 }
 
 pub fn has_stone(x:i32,y:i32) -> bool
