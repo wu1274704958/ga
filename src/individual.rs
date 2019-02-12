@@ -248,3 +248,14 @@ fn get_dir_char(beh :&Behavior) ->char
         Behavior::Right   => '㊨'
     }
 }
+
+#[cfg(target_os = "android")]
+fn get_dir_char(beh :&Behavior) ->char
+{
+    match beh{
+        Behavior::Up      => '㊤',
+        Behavior::Down    => '㊦',
+        Behavior::Left    => '㊧',
+        Behavior::Right   => '㊨'
+    }
+}
