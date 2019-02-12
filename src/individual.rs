@@ -9,6 +9,7 @@ use std::str::from_utf8;
 use num::PrimInt;
 use std::mem::size_of;
 use core::time::Duration;
+use std::iter::FromIterator;
 
 const BX:i32 = 0;
 const BY:i32 = 0;
@@ -165,8 +166,8 @@ pub fn to_behavior<T :PrimInt>(b:T) -> Behavior
 pub fn draw<T:PrimInt>(ind : Individual<T>)
 {
     let mut c = Canvas::new(W as u32,H as u32);
-    c.setPixel2D(BX,BY,b'@');
-    c.setPixel2D(EX,EY,b'$');
+    c.setPixel2D(BX,BY,'始');
+    c.setPixel2D(EX,EY,'終');
 
     let stdout = Term::stdout();
     let mut x = BX;
@@ -179,7 +180,7 @@ pub fn draw<T:PrimInt>(ind : Individual<T>)
     let mut j = 0usize;
     loop{
         if j >= len{ break;}
-        c.setPixel2D(Stones[j], Stones[j + 1],b'#');
+        c.setPixel2D(Stones[j], Stones[j + 1],'石');
         j += 2;
     }
         
@@ -199,21 +200,21 @@ pub fn draw<T:PrimInt>(ind : Individual<T>)
         }
         if x == EX && y == EY
         {
-            c.setPixel2D(x,y,b'E');
-            let s = from_utf8( c.data.as_slice() ).unwrap();
+            c.setPixel2D(x,y,'逹');
+            let s =  String::from_iter( c.data.iter() );
             print!("{}",style(s).cyan().on_black().bold());
             let tips = format!("{}  {:?} {}",i,beh,score);
             println!("{}",style(tips).green().on_black().bold());
             break;
         }
         let dir_c = match beh{
-           Behavior::Up      =>b'U',
-           Behavior::Down    =>b'D',
-           Behavior::Left    =>b'L',
-           Behavior::Right   =>b'R'
+           Behavior::Up      => '↑',
+           Behavior::Down    => '↓',
+           Behavior::Left    => '←',
+           Behavior::Right   => '→'
         };
         c.setPixel2D(x,y,dir_c);
-        let s = from_utf8( c.data.as_slice() ).unwrap();
+        let s = String::from_iter( c.data.iter() );
         print!("{}",style(s).cyan().on_black().bold());
         let tips = format!("{}  {:?} {}",i,beh,score);
         println!("{}",style(tips).green().on_black().bold());

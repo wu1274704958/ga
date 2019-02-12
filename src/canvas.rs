@@ -9,7 +9,7 @@ pub struct Vector4<T>
 }
 
 pub struct Canvas {
-    pub data: Vec<u8>,
+    pub data: Vec<char>,
     pub zb : Vec<i8>,
     pub w: u32,
     pub h: u32,
@@ -24,7 +24,7 @@ fn _max(x:i32, y:i32, z:i32) ->i32
 impl Canvas {
     pub fn new(width: u32, height: u32) -> Canvas {
         let mut c = Canvas {
-            data: vec![b' '; ((width + 1) * height) as usize],
+            data: vec!['　'; ((width + 1) * height) as usize],
             zb : vec![-128;(width * height) as usize],
             w: width,
             h: height,
@@ -33,39 +33,39 @@ impl Canvas {
         c
     }
     pub fn init(&mut self) {
-        self.data.iter_mut().for_each(|it| { *it = b' ' });
+        self.data.iter_mut().for_each(|it| { *it = '　' });
         for i in 0..self.h {
-            self.data[(i * (self.w + 1) + self.w) as usize] = b'\n';
+            self.data[(i * (self.w + 1) + self.w) as usize] = '\n';
         }
         self.zb.iter_mut().for_each(|it|{*it = -128});
     }
     pub fn setPixel(&mut self, x: i32, y: i32 ,z:i32)
     {
         //print!("{}\n",z);
-        let p : u8;
+        let p : char;
         p = match z {
-            -10 => b'\'',
-            -9 => b'\'',
-            -8 => b'`',
-            -7 => b':',
-            -6 => b';',
-            -5 => b'-',
-            -4 => b'~',
-            -3 => b'=',
-            -2 => b'|',
-            -1 => b'\\',
-            0  => b'\\',
-             1 => b'!',
-             2 => b'I',
-             3 => b'J',
-             4 => b'L',
-             5 => b'E',
-             6 => b'P',
-             7 => b'R',
-             8 => b'$',
-             9 => b'#',
-             10 => b'@',
-            _ => b'#'
+            -10=> '\'',
+            -9 => '\'',
+            -8 => '`',
+            -7 => ':',
+            -6 => ';',
+            -5 => '-',
+            -4 => '~',
+            -3 => '=',
+            -2 => '|',
+            -1 => '\\',
+            0  => '\\',
+             1 => '!',
+             2 => 'I',
+             3 => 'J',
+             4 => 'L',
+             5 => 'E',
+             6 => 'P',
+             7 => 'R',
+             8 => '$',
+             9 => '#',
+             10=> '@',
+            _  => '#'
         };
         if self.zb[(y * self.w as i32 + x) as usize] < (z as i8)
         {
@@ -74,7 +74,7 @@ impl Canvas {
         }
     }
 
-    pub fn setPixel2D(&mut self, x: i32, y: i32 ,c:u8)
+    pub fn setPixel2D(&mut self, x: i32, y: i32 ,c:char)
     {
         if self.inBound(x,y){
             self.data[(y * (self.w as i32 + 1) + x) as usize] = c;
