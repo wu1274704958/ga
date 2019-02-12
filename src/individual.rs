@@ -5,7 +5,6 @@ use rand::random;
 use crate::canvas::{ Canvas };
 use std::thread::sleep;
 use console::{style,Term};
-use std::str::from_utf8;
 use num::PrimInt;
 use std::mem::size_of;
 use core::time::Duration;
@@ -231,10 +230,10 @@ fn get_dir_char(beh :&Behavior) ->char
 fn get_dir_char_msys(beh :&Behavior) ->char
 {
     match beh{
-        Behavior::Up      => '上',
-        Behavior::Down    => '下',
-        Behavior::Left    => '左',
-        Behavior::Right   => '右'
+        Behavior::Up      => '〇',
+        Behavior::Down    => '〇',
+        Behavior::Left    => '〇',
+        Behavior::Right   => '〇'
     }
 }
 
