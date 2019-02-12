@@ -230,31 +230,20 @@ fn get_dir_char(beh :&Behavior) ->char
 fn get_dir_char_msys(beh :&Behavior) ->char
 {
     match beh{
-        Behavior::Up      => '〇',
-        Behavior::Down    => '〇',
-        Behavior::Left    => '〇',
-        Behavior::Right   => '〇'
+        Behavior::Up      => '︽',
+        Behavior::Down    => '︾',
+        Behavior::Left    => '《',
+        Behavior::Right   => '》'
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux",target_os = "android"))]
 fn get_dir_char(beh :&Behavior) ->char
 {
     match beh{
-        Behavior::Up      => '㊤',
-        Behavior::Down    => '㊦',
-        Behavior::Left    => '㊧',
-        Behavior::Right   => '㊨'
-    }
-}
-
-#[cfg(target_os = "android")]
-fn get_dir_char(beh :&Behavior) ->char
-{
-    match beh{
-        Behavior::Up      => '㊤',
-        Behavior::Down    => '㊦',
-        Behavior::Left    => '㊧',
-        Behavior::Right   => '㊨'
+        Behavior::Up      => '︽',
+        Behavior::Down    => '︾',
+        Behavior::Left    => '《',
+        Behavior::Right   => '》'
     }
 }
