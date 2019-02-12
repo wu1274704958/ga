@@ -207,17 +207,44 @@ pub fn draw<T:PrimInt>(ind : Individual<T>)
             println!("{}",style(tips).green().on_black().bold());
             break;
         }
-        let dir_c = match beh{
-           Behavior::Up      => '↑',
-           Behavior::Down    => '↓',
-           Behavior::Left    => '←',
-           Behavior::Right   => '→'
-        };
+        let dir_c =  if stdout.features().is_msys_tty() {  get_dir_char_msys(&beh) }  else { get_dir_char(&beh) };
         c.setPixel2D(x,y,dir_c);
         let s = String::from_iter( c.data.iter() );
         print!("{}",style(s).cyan().on_black().bold());
         let tips = format!("{}  {:?} {}",i,beh,score);
         println!("{}",style(tips).green().on_black().bold());
         sleep( Duration::from_millis(300));
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn get_dir_char(beh :&Behavior) ->char
+{
+    match beh{
+        Behavior::Up      => '↑',
+        Behavior::Down    => '↓',
+        Behavior::Left    => '←',
+        Behavior::Right   => '→'
+    }
+}
+
+fn get_dir_char_msys(beh :&Behavior) ->char
+{
+    match beh{
+        Behavior::Up      => '上',
+        Behavior::Down    => '下',
+        Behavior::Left    => '左',
+        Behavior::Right   => '右'
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn get_dir_char(beh :&Behavior) ->char
+{
+    match beh{
+        Behavior::Up      => '㊤',
+        Behavior::Down    => '㊦',
+        Behavior::Left    => '㊧',
+        Behavior::Right   => '㊨'
     }
 }
